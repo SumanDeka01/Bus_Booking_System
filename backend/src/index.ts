@@ -2,6 +2,7 @@ import "dotenv/config";
 import app from "./app";
 import connectDB from "./config/db";
 
+// Got DNS issue! Had to do this:)
 import dns from "dns";
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
