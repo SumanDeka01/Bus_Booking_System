@@ -6,13 +6,15 @@ export interface ISeat {
     isReserved: boolean,
     reservedUntil?: Date;
     row: number,
-    column:number
+    column:number,
+    seatType: string,
+    sleeperLevel?: string,
 }
 
 export interface IStop {
-    stopName: String,
-    arrivalTime: String,
-    departureTime: String
+    stopName: string,
+    arrivalTime?: string,
+    departureTime?: string
 }
 
 export interface IBus extends Document {

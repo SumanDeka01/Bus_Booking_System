@@ -6,8 +6,8 @@ export const generateSeatLayout = ({
     bookedSeats 
 }: {
     totalSeats: number;
-    seatType: String;
-    bookedSeats?: number
+    seatType: string;
+    bookedSeats?: number[]
 }): ISeat[] => {
     const seats: ISeat[] = [];
 
@@ -18,7 +18,7 @@ export const generateSeatLayout = ({
 
         seats.push({
             seatNumber: i,
-            isAvaiable: !bookedSeats?.includes(i),
+            isAvailable: !bookedSeats?.includes(i),
             isReserved: false,
             row,
             column,
