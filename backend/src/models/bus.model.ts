@@ -111,6 +111,7 @@ const BusSchema = new Schema<IBus>({
     },
     seatTypes: { 
         type: [String], 
+        enum: ["normal", "semi-sleeper", "sleeper", "seater"],
         required: true 
     },
     isAC: { 
