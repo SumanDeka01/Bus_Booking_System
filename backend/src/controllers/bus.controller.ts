@@ -29,7 +29,7 @@ export const getBuses = async (
       
       departureCity: { $regex: new RegExp(`^${departureCity}$`, "i") },
       arrivalCity: { $regex: new RegExp(`^${arrivalCity}$`, "i") },
-      date,
+      
     };
 
     if (seatType) query.seatType = { $in : [seatType] };
