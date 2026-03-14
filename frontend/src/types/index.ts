@@ -1,8 +1,20 @@
+export interface BusSearchParams {
+  departureCity: string;
+  arrivalCity: string;
+  date: string;
+  seatType?: string;
+  isAC?: string;
+  departureSlot?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export interface Stop {
   stopName: string;
   arrivalTime?: string;
   departureTime?: string;
 }
+
 
 export interface Bus {
   id: string;
@@ -33,13 +45,4 @@ export interface PassengerDetail {
   gender: string;
 }
 
-export interface BusSearchParams {
-  departureCity: string;
-  arrivalCity: string;
-  date: string;
-  seatType?: string;
-  isAC?: string;
-  departureSlot?: string;
-  page?: number;
-  pageSize?: number;
-}
+
