@@ -3,12 +3,10 @@ import { Booking } from "../models/booking.model";
 import { Bus } from "../models/bus.model";
 
 export const createBooking = async (
-
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-
   try {
     const { busId, seats, passengerDetails } = req.body;
 
@@ -19,33 +17,43 @@ export const createBooking = async (
       return;
     }
 
-    if(seats.length !== passengerDetails.length) {
+    if (seats.length !== passengerDetails.length) {
       res.status(400).json({
-        message: "Number of seats must match number of passengers"
+        message: "Number of seats must match number of passengers",
       });
       return;
     }
-
 
     const bus = await Bus.findById(busId);
     if (!bus) {
-      res.status(404).json({
-        message: "Bus not found"
-      });
+      res.status(404).json({ message: "Bus not found" });
       return;
     }
 
-
+    const now = new Date();
     const unavailable: number[] = [];
+
     for (const seatNum of seats) {
       const seat = bus.seats.find((s) => s.seatNumber === seatNum);
-      if (!seat || !seat.isAvailable) {
+
+      if (!seat) {
         unavailable.push(seatNum);
+        continue;
+      }
+
+      
+      if (!seat.isAvailable && !seat.isReserved) {
+        unavailable.push(seatNum);
+        continue;
+      }
+
+      
+      if (seat.isReserved && seat.reservedUntil && seat.reservedUntil > now) {
+        continue;
       }
     }
 
-
-    if(unavailable.length > 0) {
+    if (unavailable.length > 0) {
       res.status(409).json({
         message: "Some seats are not available",
         unavailableSeats: unavailable,
@@ -53,7 +61,7 @@ export const createBooking = async (
       return;
     }
 
-
+    // mark seats as permanently booked
     let bookedCount = 0;
     for (const seat of bus.seats) {
       if (seats.includes(seat.seatNumber)) {
@@ -61,20 +69,17 @@ export const createBooking = async (
         seat.isReserved = false;
         seat.reservedUntil = undefined;
         bookedCount++;
-
       }
     }
 
     bus.availableSeats = Math.max(0, bus.availableSeats - bookedCount);
     await bus.save();
 
-    
     const passengers = passengerDetails.map((p: any, i: number) => ({
       ...p,
       seatNumber: seats[i],
     }));
 
-   
     const booking = await Booking.create({
       busId: bus._id,
       seatsBooked: seats,
@@ -89,8 +94,7 @@ export const createBooking = async (
       seatsBooked: booking.seatsBooked,
       totalPrice: booking.totalPrice,
     });
-
-    } catch (error) {
+  } catch (error) {
     next(error);
-  } 
+  }
 };
