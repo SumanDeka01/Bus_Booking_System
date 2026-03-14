@@ -1,12 +1,53 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     departureCity: "",
     arrivalCity: "",
     date: "",
   });
+
+  const [error, setError] = useState("");
+
+  const handleChange = (field: string, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    if (error) setError("");
+  };
+
+  const handleSearch = () => {
+    if (!form.departureCity.trim()) {
+      setError("Please enter a departure city");
+      return;
+    }
+    if (!form.arrivalCity.trim()) {
+      setError("Please enter an arrival city");
+      return;
+    }
+    if (!form.date) {
+      setError("Please select a travel date");
+      return;
+    }
+    if (
+      form.departureCity.trim().toLowerCase() ===
+      form.arrivalCity.trim().toLowerCase()
+    ) {
+      setError("Departure and arrival cities cannot be the same");
+      return;
+    }
+
+    navigate(
+      `/buses?departureCity=${form.departureCity.trim()}&arrivalCity=${form.arrivalCity.trim()}&date=${form.date}`,
+    );
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") handleSearch();
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -60,7 +101,10 @@ const HomePage = () => {
             />
           </div>
 
-          <button className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition">
+          <button
+            onClick={handleSearch}
+            className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition"
+          >
             Search Buses
           </button>
         </div>
