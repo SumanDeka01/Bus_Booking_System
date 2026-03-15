@@ -15,7 +15,6 @@ const HomePage = () => {
 
   const handleChange = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-
     if (error) setError("");
   };
 
@@ -50,7 +49,25 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        background: "#0f172a",
+        fontFamily: "'Inter', sans-serif",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,0.18) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 80% 80%, rgba(99,102,241,0.1) 0%, transparent 60%)",
+          pointerEvents: "none",
+        }}
+      />
+
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center px-4">
@@ -61,30 +78,28 @@ const HomePage = () => {
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Departure City
+              From
             </label>
             <input
               type="text"
               placeholder="Enter departure city"
               value={form.departureCity}
-              onChange={(e) =>
-                setForm({ ...form, departureCity: e.target.value })
-              }
+              onChange={(e) => handleChange("departureCity", e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Arrival City
+              To
             </label>
             <input
               type="text"
               placeholder="Enter arrival city"
               value={form.arrivalCity}
-              onChange={(e) =>
-                setForm({ ...form, arrivalCity: e.target.value })
-              }
+              onChange={(e) => handleChange("arrivalCity", e.target.value)}
+              onKeyDown={handleKeyDown}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
@@ -96,14 +111,20 @@ const HomePage = () => {
             <input
               type="date"
               value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
+              onChange={(e) => handleChange("date", e.target.value)}
+              onKeyDown={handleKeyDown}
+              min={new Date().toISOString().split("T")[0]}
               className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
             />
           </div>
 
+          {error && (
+            <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+          )}
+
           <button
             onClick={handleSearch}
-            className="w-full bg-gray-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 transition"
+            className="w-full bg-blue-900 text-white py-2.5 rounded-lg text-sm font-medium hover:bg-blue-800 transition"
           >
             Search Buses
           </button>
@@ -111,7 +132,7 @@ const HomePage = () => {
       </div>
 
       <footer className="text-center text-xs text-gray-400 py-4 border-t">
-        © Suman Deka. All rights reserved. Project Assignment.
+        © Suman Deka. All rights reserved.
       </footer>
     </div>
   );

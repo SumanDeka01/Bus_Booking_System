@@ -5,7 +5,6 @@ import BusCard from "../components/BusCard";
 import { searchBuses } from "../services/BusAPI";
 import type { Bus, BusSearchParams } from "../types/index";
 
-//have to move to helper.
 interface Filters {
   seatType: string;
   isAC: string;
@@ -24,6 +23,10 @@ const BusListPage = () => {
   const [error, setError] = useState("");
   const [totalBuses, setTotalBuses] = useState(0);
 
+  // pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [filters, setFilters] = useState<Filters>({
     seatType: "",
     isAC: "",
@@ -32,7 +35,7 @@ const BusListPage = () => {
 
   useEffect(() => {
     fetchBuses();
-  }, [filters]);
+  }, [filters, currentPage]);
 
   //fetch buses based on search...
   const fetchBuses = async () => {
@@ -44,6 +47,8 @@ const BusListPage = () => {
         departureCity,
         arrivalCity,
         date,
+        page: currentPage,
+        pageSize: 5,
       };
 
       if (filters.seatType) params.seatType = filters.seatType;
@@ -53,6 +58,7 @@ const BusListPage = () => {
       const data = await searchBuses(params);
       setBuses(data.buses);
       setTotalBuses(data.totalBuses);
+      setTotalPages(data.totalPages);
     } catch (err) {
       setError("Failed to fetch buses. Please try again.");
     } finally {
@@ -61,6 +67,7 @@ const BusListPage = () => {
   };
 
   const handleFilterChange = (key: keyof Filters, value: string) => {
+    setCurrentPage(1); // reset to page 1 when filter changes
     setFilters((prev) => ({
       ...prev,
       [key]: prev[key] === value ? "" : value,
@@ -68,6 +75,7 @@ const BusListPage = () => {
   };
 
   const clearFilters = () => {
+    setCurrentPage(1);
     setFilters({ seatType: "", isAC: "", departureSlot: "" });
   };
 
@@ -202,6 +210,44 @@ const BusListPage = () => {
                     searchParams={{ departureCity, arrivalCity, date }}
                   />
                 ))}
+
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-2 mt-6 mb-2">
+                    <button
+                      onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded border border-gray-300 text-sm text-gray-600 disabled:opacity-40 hover:bg-gray-50 transition"
+                    >
+                      Prev
+                    </button>
+
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-1.5 rounded border text-sm transition ${
+                            currentPage === page
+                              ? "bg-gray-900 text-white border-gray-900"
+                              : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ),
+                    )}
+
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(totalPages, p + 1))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 rounded border border-gray-300 text-sm text-gray-600 disabled:opacity-40 hover:bg-gray-50 transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
               </>
             )}
           </div>

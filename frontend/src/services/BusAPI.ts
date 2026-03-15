@@ -1,25 +1,26 @@
 import axios from "axios";
+import type { BusSearchParams } from "../types";
 
-// base URL points to our backend
+
 const API = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
 });
 
 
-export const searchBuses = async (params: Record<string, string | number>) => {
-  const res = await API.get("/buses", { params });
+export const searchBuses = async (params: BusSearchParams) => {
+  const res = await API.get("/api/buses", { params });
   return res.data;
 };
 
 
 export const getBusById = async (busId: string) => {
-  const res = await API.get(`/buses/${busId}`);
+  const res = await API.get(`/api/buses/${busId}`);
   return res.data;
 };
 
 
 export const reserveSeats = async (busId: string, seats: number[]) => {
-  const res = await API.post(`/buses/${busId}/reserve`, { seats });
+  const res = await API.post(`/api/buses/${busId}/reserve`, { seats });
   return res.data;
 };
 
@@ -29,6 +30,6 @@ export const createBooking = async (data: {
   seats: number[];
   passengerDetails: { name: string; age: number; gender: string }[];
 }) => {
-  const res = await API.post("/bookings", data);
+  const res = await API.post("/api/bookings", data);
   return res.data;
 };

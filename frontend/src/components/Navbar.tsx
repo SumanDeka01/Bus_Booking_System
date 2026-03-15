@@ -8,8 +8,6 @@ const Navbar = () => {
 
         <div className="space-x-6 text-sm text-gray-600">
           <span className="cursor-pointer hover:text-black">Home</span>
-          <span className="cursor-pointer hover:text-black">Bookings</span>
-          <span className="cursor-pointer hover:text-black">Help</span>
         </div>
       </div>
     </nav>

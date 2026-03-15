@@ -16,6 +16,8 @@ const BookingConfirmPage = () => {
   const { busId, busInfo, selectedSeats, searchParams, totalPrice } =
     location.state || {};
 
+  console.log(busInfo);
+
   const [passengers, setPassengers] = useState<Passenger[]>(
     selectedSeats?.map(() => ({ name: "", age: "", gender: "" })) || [],
   );

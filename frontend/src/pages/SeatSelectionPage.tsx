@@ -205,21 +205,18 @@ const SeatSelectionPage = () => {
               <span className="font-semibold">{timer}s</span>
             </p>
           )}
-
           <p className="text-sm text-gray-500 mb-1">
             Selected Seats:{" "}
             <span className="text-gray-700 font-medium">
               {selectedSeats.length > 0 ? selectedSeats.join(", ") : "None"}
             </span>
           </p>
-
           <div className="mb-5">
             <span className="text-sm text-gray-500">Total Price: </span>
             <span className="text-2xl font-bold text-gray-900">
               Rs. {totalPrice.toLocaleString("en-IN")}
             </span>
           </div>
-
           <button
             onClick={handleProceed}
             disabled={selectedSeats.length === 0 || reserving}

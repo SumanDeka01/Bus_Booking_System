@@ -40,6 +40,16 @@ export const getBuses = async (
     
     let buses = await Bus.find(query).select("-seats").lean();
 
+    const unique = new Map();
+
+    buses.forEach((bus) => {
+      if (!unique.has(bus.name)) {
+          unique.set(bus.name, bus);
+      }
+    });
+
+    buses = Array.from(unique.values());
+
     
     if (departureSlot) {
       buses = buses.filter((bus) => {
@@ -73,6 +83,7 @@ export const getBuses = async (
         price: bus.price,
         seatTypes: bus.seatTypes,
         isAC: bus.isAC,
+        date: bus.date,
       })),
     });
   } catch (error) {
